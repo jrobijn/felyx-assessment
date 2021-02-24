@@ -22,16 +22,6 @@
       "sqlQuery": "SELECT * from c"
     },
     {
-      "type": "cosmosDB",
-      "direction": "in",
-      "name": "locations",
-      "databaseName": "reservations",
-      "collectionName": "locations",
-      "createIfNotExists": "true",
-      "connectionStringSetting": "AzureCosmosDBConnectionString",
-      "sqlQuery": "SELECT * from c"
-    },
-    {
       "type": "http",
       "direction": "out",
       "name": "$return"

@@ -1,6 +1,6 @@
 import logging
 import json
-from shared.data import reservation_attributes
+from shared.data import reservation_schema
 from shared.utils import convert_dict_list_to_csv_string
 
 import azure.functions as func
@@ -10,18 +10,21 @@ def parse_document(doc: func.Document, attributes: list) -> dict:
     return {attr: doc[attr] if attr in doc else None for attr in attributes}
 
 
-def main(req: func.HttpRequest, documents: func.DocumentList, locations: func.DocumentList) -> func.HttpResponse:
+def main(req: func.HttpRequest, documents: func.DocumentList) -> func.HttpResponse:
     logging.info("The CosmosDB API is fetching all reservation records")
 
     try:
         output_format = req.params.get("format", "json")
 
+        columns = list(reservation_schema.keys())
+        #if bool(add_location):
+        #    columns += ["location_wgs84_polygon", "location_title"]
+        reservations = [parse_document(d, columns) for d in documents]
+
         if output_format == "json":
-            reservations = [parse_document(d, reservation_attributes) for d in documents]
             output = json.dumps(reservations)
         elif output_format == "csv":
-            reservations = [parse_document(d, reservation_attributes) for d in documents]
-            output = convert_dict_list_to_csv_string(reservations, reservation_attributes)
+            output = convert_dict_list_to_csv_string(reservations, columns)
         else:
             raise ValueError(f"Unsupported format '{output_format}'")
 
