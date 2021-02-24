@@ -1,0 +1,28 @@
+{
+  "scriptFile": "__init__.py",
+  "bindings": [
+    {
+      "name": "reservationsBlob",
+      "type": "blobTrigger",
+      "direction": "in",
+      "path": "felyx-data/{name}",
+      "connection": "AzureWebJobsStorage"
+    },
+    {
+      "name": "locationsBlob",
+      "type": "blob",
+      "direction": "in",
+      "path": "felyx-metadata/assignment_locations.csv",
+      "connection": "AzureWebJobsStorage"
+    },
+    {
+      "type": "cosmosDB",
+      "direction": "out",
+      "name": "document",
+      "databaseName": "reservations",
+      "collectionName": "reservations",
+      "createIfNotExists": "true",
+      "connectionStringSetting": "AzureCosmosDBConnectionString"
+    }
+  ]
+}
