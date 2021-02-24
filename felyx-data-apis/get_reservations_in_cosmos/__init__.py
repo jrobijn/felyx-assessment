@@ -10,7 +10,7 @@ def parse_document(doc: func.Document, attributes: list) -> dict:
     return {attr: doc[attr] if attr in doc else None for attr in attributes}
 
 
-def main(req: func.HttpRequest, documents: func.DocumentList) -> func.HttpResponse:
+def main(req: func.HttpRequest, documents: func.DocumentList, locations: func.DocumentList) -> func.HttpResponse:
     logging.info("The CosmosDB API is fetching all reservation records")
 
     try:
