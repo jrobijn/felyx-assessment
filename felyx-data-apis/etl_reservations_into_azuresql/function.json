@@ -1,0 +1,12 @@
+{
+  "scriptFile": "__init__.py",
+  "bindings": [
+    {
+      "name": "reservationsBlob",
+      "type": "blobTrigger",
+      "direction": "in",
+      "path": "felyx-data/{name}",
+      "connection": "AzureWebJobsStorage"
+    }
+  ]
+}
