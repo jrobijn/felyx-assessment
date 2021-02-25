@@ -2,7 +2,7 @@ import logging
 import json
 import pyodbc
 from dotenv import load_dotenv
-from shared.data import reservation_schema
+from shared.data import reservation_schema, location_schema
 from shared.utils import convert_dict_list_to_csv_string, parse_boolean
 from shared.sql import get_sql_connection_string
 
@@ -16,9 +16,9 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         output_format = req.params.get("format", "json")
         add_location = req.params.get("addLocation", "False")
 
-        columns = reservation_schema.keys()
+        columns = list(reservation_schema.keys())
         if parse_boolean(add_location):
-            columns += ["wgs84_polygon", "title"]
+            columns += [f"location_{field}" for field in location_schema.keys()]
             query = "SELECT * FROM Reservations r LEFT JOIN Locations l ON r.location_id = l.id"
         else:
             query = "SELECT * FROM Reservations"
