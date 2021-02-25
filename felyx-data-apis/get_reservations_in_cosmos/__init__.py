@@ -1,7 +1,7 @@
 import logging
 import json
 from shared.data import reservation_schema
-from shared.utils import convert_dict_list_to_csv_string
+from shared.utils import convert_dict_list_to_csv_string, parse_boolean
 
 import azure.functions as func
 
@@ -15,10 +15,11 @@ def main(req: func.HttpRequest, documents: func.DocumentList) -> func.HttpRespon
 
     try:
         output_format = req.params.get("format", "json")
-
+        add_location = req.params.get("addLocation", "False")
+        
         columns = list(reservation_schema.keys())
-        #if bool(add_location):
-        #    columns += ["location_wgs84_polygon", "location_title"]
+        if parse_boolean(add_location):
+            columns += ["location_wgs84_polygon", "location_title"]
         reservations = [parse_document(d, columns) for d in documents]
 
         if output_format == "json":

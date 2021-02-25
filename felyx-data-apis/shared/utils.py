@@ -31,3 +31,12 @@ def convert_dict_list_to_csv_string(reservations: list, headers: list) -> str:
     writer.writerows(reservations)
 
     return output.getvalue()
+
+
+def parse_boolean(input_string: str) -> bool:
+    true_values = [
+        "True",
+        "true",
+        "1"
+    ]
+    return input_string in true_values
