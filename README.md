@@ -34,4 +34,13 @@ In this repository are 2 folders:
 
 ## API usage
 
-...
+The APIs are online at https://felyx-data-apis.azurewebsites.net/
+Cosmos DB API: https://felyx-data-apis.azurewebsites.net/api/cosmos/reservations
+Azure SQL API: https://felyx-data-apis.azurewebsites.net/api/azuresql/reservations
+
+For both APIs, the query parameters *format* and *addLocation* are supported.
+*format* - supports *csv* and *json*. Defaults to *json*. Other input values return an error
+*addLocation* - supports *True* and *False*. Defaults to *False*
+
+An example API call:
+https://felyx-data-apis.azurewebsites.net/api/cosmos/reservations?format=csv&addLocation=True
