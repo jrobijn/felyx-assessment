@@ -1,0 +1,210 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "sites_felyx_data_apis_name": {
+            "defaultValue": "felyx-data-apis",
+            "type": "String"
+        },
+        "serverfarms_ASP_felyxassessment_a56c_externalid": {
+            "defaultValue": "/subscriptions/ef29e278-f305-4318-8893-a318566c8be3/resourceGroups/felyx-assessment/providers/Microsoft.Web/serverfarms/ASP-felyxassessment-a56c",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2018-11-01",
+            "name": "[parameters('sites_felyx_data_apis_name')]",
+            "location": "West Europe",
+            "kind": "functionapp,linux",
+            "properties": {
+                "enabled": true,
+                "hostNameSslStates": [
+                    {
+                        "name": "[concat(parameters('sites_felyx_data_apis_name'), '.azurewebsites.net')]",
+                        "sslState": "Disabled",
+                        "hostType": "Standard"
+                    },
+                    {
+                        "name": "[concat(parameters('sites_felyx_data_apis_name'), '.scm.azurewebsites.net')]",
+                        "sslState": "Disabled",
+                        "hostType": "Repository"
+                    }
+                ],
+                "serverFarmId": "[parameters('serverfarms_ASP_felyxassessment_a56c_externalid')]",
+                "reserved": true,
+                "isXenon": false,
+                "hyperV": false,
+                "siteConfig": {},
+                "scmSiteAlsoStopped": false,
+                "clientAffinityEnabled": false,
+                "clientCertEnabled": false,
+                "hostNamesDisabled": false,
+                "containerSize": 1536,
+                "dailyMemoryTimeQuota": 0,
+                "httpsOnly": false,
+                "redundancyMode": "None"
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/config",
+            "apiVersion": "2018-11-01",
+            "name": "[concat(parameters('sites_felyx_data_apis_name'), '/web')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_felyx_data_apis_name'))]"
+            ],
+            "properties": {
+                "numberOfWorkers": 1,
+                "defaultDocuments": [
+                    "Default.htm",
+                    "Default.html",
+                    "Default.asp",
+                    "index.htm",
+                    "index.html",
+                    "iisstart.htm",
+                    "default.aspx",
+                    "index.php"
+                ],
+                "netFrameworkVersion": "v4.0",
+                "linuxFxVersion": "PYTHON|3.8",
+                "requestTracingEnabled": false,
+                "remoteDebuggingEnabled": false,
+                "remoteDebuggingVersion": "VS2019",
+                "httpLoggingEnabled": false,
+                "logsDirectorySizeLimit": 35,
+                "detailedErrorLoggingEnabled": false,
+                "publishingUsername": "$felyx-data-apis",
+                "azureStorageAccounts": {},
+                "scmType": "None",
+                "use32BitWorkerProcess": false,
+                "webSocketsEnabled": false,
+                "alwaysOn": false,
+                "managedPipelineMode": "Integrated",
+                "virtualApplications": [
+                    {
+                        "virtualPath": "/",
+                        "physicalPath": "site\\wwwroot",
+                        "preloadEnabled": false
+                    }
+                ],
+                "loadBalancing": "LeastRequests",
+                "experiments": {
+                    "rampUpRules": []
+                },
+                "autoHealEnabled": false,
+                "cors": {
+                    "allowedOrigins": [
+                        "https://functions.azure.com",
+                        "https://functions-staging.azure.com",
+                        "https://functions-next.azure.com"
+                    ],
+                    "supportCredentials": false
+                },
+                "localMySqlEnabled": false,
+                "ipSecurityRestrictions": [
+                    {
+                        "ipAddress": "Any",
+                        "action": "Allow",
+                        "priority": 1,
+                        "name": "Allow all",
+                        "description": "Allow all access"
+                    }
+                ],
+                "scmIpSecurityRestrictions": [
+                    {
+                        "ipAddress": "Any",
+                        "action": "Allow",
+                        "priority": 1,
+                        "name": "Allow all",
+                        "description": "Allow all access"
+                    }
+                ],
+                "scmIpSecurityRestrictionsUseMain": false,
+                "http20Enabled": false,
+                "minTlsVersion": "1.2",
+                "ftpsState": "AllAllowed",
+                "reservedInstanceCount": 0
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/functions",
+            "apiVersion": "2018-11-01",
+            "name": "[concat(parameters('sites_felyx_data_apis_name'), '/etl_reservations_into_azuresql')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_felyx_data_apis_name'))]"
+            ],
+            "properties": {
+                "script_root_path_href": "https://felyx-data-apis.azurewebsites.net/admin/vfs/home/site/wwwroot/etl_reservations_into_azuresql/",
+                "script_href": "https://felyx-data-apis.azurewebsites.net/admin/vfs/home/site/wwwroot/etl_reservations_into_azuresql/__init__.py",
+                "config_href": "https://felyx-data-apis.azurewebsites.net/admin/vfs/home/site/wwwroot/etl_reservations_into_azuresql/function.json",
+                "href": "https://felyx-data-apis.azurewebsites.net/admin/functions/etl_reservations_into_azuresql",
+                "config": {}
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/functions",
+            "apiVersion": "2018-11-01",
+            "name": "[concat(parameters('sites_felyx_data_apis_name'), '/etl_reservations_into_cosmos')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_felyx_data_apis_name'))]"
+            ],
+            "properties": {
+                "script_root_path_href": "https://felyx-data-apis.azurewebsites.net/admin/vfs/home/site/wwwroot/etl_reservations_into_cosmos/",
+                "script_href": "https://felyx-data-apis.azurewebsites.net/admin/vfs/home/site/wwwroot/etl_reservations_into_cosmos/__init__.py",
+                "config_href": "https://felyx-data-apis.azurewebsites.net/admin/vfs/home/site/wwwroot/etl_reservations_into_cosmos/function.json",
+                "href": "https://felyx-data-apis.azurewebsites.net/admin/functions/etl_reservations_into_cosmos",
+                "config": {}
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/functions",
+            "apiVersion": "2018-11-01",
+            "name": "[concat(parameters('sites_felyx_data_apis_name'), '/get_reservations_in_azuresql')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_felyx_data_apis_name'))]"
+            ],
+            "properties": {
+                "script_root_path_href": "https://felyx-data-apis.azurewebsites.net/admin/vfs/home/site/wwwroot/get_reservations_in_azuresql/",
+                "script_href": "https://felyx-data-apis.azurewebsites.net/admin/vfs/home/site/wwwroot/get_reservations_in_azuresql/__init__.py",
+                "config_href": "https://felyx-data-apis.azurewebsites.net/admin/vfs/home/site/wwwroot/get_reservations_in_azuresql/function.json",
+                "href": "https://felyx-data-apis.azurewebsites.net/admin/functions/get_reservations_in_azuresql",
+                "config": {}
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/functions",
+            "apiVersion": "2018-11-01",
+            "name": "[concat(parameters('sites_felyx_data_apis_name'), '/get_reservations_in_cosmos')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_felyx_data_apis_name'))]"
+            ],
+            "properties": {
+                "script_root_path_href": "https://felyx-data-apis.azurewebsites.net/admin/vfs/home/site/wwwroot/get_reservations_in_cosmos/",
+                "script_href": "https://felyx-data-apis.azurewebsites.net/admin/vfs/home/site/wwwroot/get_reservations_in_cosmos/__init__.py",
+                "config_href": "https://felyx-data-apis.azurewebsites.net/admin/vfs/home/site/wwwroot/get_reservations_in_cosmos/function.json",
+                "href": "https://felyx-data-apis.azurewebsites.net/admin/functions/get_reservations_in_cosmos",
+                "config": {}
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/hostNameBindings",
+            "apiVersion": "2018-11-01",
+            "name": "[concat(parameters('sites_felyx_data_apis_name'), '/', parameters('sites_felyx_data_apis_name'), '.azurewebsites.net')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_felyx_data_apis_name'))]"
+            ],
+            "properties": {
+                "siteName": "felyx-data-apis",
+                "hostNameType": "Verified"
+            }
+        }
+    ]
+}
