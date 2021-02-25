@@ -23,6 +23,8 @@ Azure Blob Storage is the main general storage solution that Azure offers. I use
 
 For the NoSQL database, I opted to denormalize the data before storing it in the database. Due to their nature, NoSQL databases tend to have poor or no support for joins, and Cosmos DB is no exception. By denormalizing the data before storing it, I'm avoiding having to write custom joining logic inside my API code.
 
+![Solution architecture](docs/architecture.png)
+
 ## Repository contents
 
 In this repository are 2 folders:
